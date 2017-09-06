@@ -17,30 +17,38 @@ Features:
 ## Usage example
 
 ```javascript
-const budgeteer = new Budgeteer({ host: 'redishost', port: 12345 });
+const budgeteer = new Budgeteer({ 
+    store: {
+        type: 'redis',
+        host: 'redishost', 
+        port: 12345,
+        ttl: 86400 * 7 // 7 days
+    }
+});
 const key = 'someName';
 
 // Budget configuration, typically per event type.
 const budget = {
     initial_token_balance: 40,
     token_budget_per_day: 24,
+    max_delay_days: 7 // Try processing an event at least once every <n> days
 };
 
 return budgeteer.check(key, budget, req.startTime)
 .then(res => {
     if (res.isDuplicate) {
-        // Duplicate. Drop the job.
+        // Duplicate. Drop the event.
         return;
     }
     if (res.delay) {
-        // add job to a (Kafka) delay queue, based on the suggested delay.
-        return enqueueToDelayQueue(job, delay)
+        // add event to a (Kafka) delay queue, based on the suggested delay.
+        return enqueueToDelayQueue(evnt, delay)
         // Redis read / write.
         .then(() => budgeteer.reportScheduled(key, budget, 0);
     } else {
         const startTime = Date.now();
-        // execute job
-        return job()
+        // execute event
+        return process_event(evnt)
         // Redis read / write.
         .then(() => budgeteer.reportSuccess(key, budget, startTime, (Date.now() - startTime) / 1000))
         .catch(e => {
@@ -50,7 +58,7 @@ return budgeteer.check(key, budget, req.startTime)
             .then(res => {
                 if (!res.isDuplicate) {
                     delay = Math.max(delay, 200);
-                    return enqueueToDelayQueue(job, delay)
+                    return enqueueToDelayQueue(evnt, delay)
                     // Redis read / write.
                     .then(() => budgeteer.reportScheduled(key, budget, cost));
                 }

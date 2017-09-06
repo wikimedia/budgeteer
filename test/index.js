@@ -7,7 +7,14 @@ require('mocha-eslint')([
 ]);
 
 const Budgeteer = require('../lib/budgeteer');
-const limiter = new Budgeteer({ host: 'localhost', port: 80 });
+const limiter = new Budgeteer({
+    store: {
+        type: 'redis',
+        host: 'localhost',
+        port: 80,
+        ttl: 86400 * 7 // 7 days
+    }
+});
 const equal = require('assert').equal;
 
 // Monkey-patch private _redis object
