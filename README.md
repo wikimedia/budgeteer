@@ -1,15 +1,15 @@
 # budgeteer
-Cost-based request rate limiter, scheduler, and deduplicator. Uses a Redis
+Cost-based event rate limiter, scheduler, and deduplicator. Uses a Redis
 backend. Provides the "brain" of a simple job scheduling system.
 
 Features:
 
-- Request deduplication: Requests that have already been executed, or are
-    scheduled for delayed execution, are dropped.
-- Cost based accounting, giving each request key a token budget per day. Clients 
+- Event deduplication: Events that have already been processed, or are
+    scheduled for delayed processing, are dropped.
+- Cost based accounting, giving each key a token budget per day. Clients 
     are free to model costs any way they like. Typically, execution time (in
     seconds) is a major input into the cost function.
-- Delay and retry scheduling: An execution delay is calculated once a job's
+- Delay and retry scheduling: An execution delay is calculated once an event's
     budget turns negative. The delay is proportional to the time it takes to
     even out the budget, based on the `token_budget_per_day` configuration
     option.
@@ -20,7 +20,7 @@ Features:
 const budgeteer = new Budgeteer({ host: 'redishost', port: 12345 });
 const key = 'someName';
 
-// Budget configuration, typically per request type.
+// Budget configuration, typically per event type.
 const budget = {
     initial_token_balance: 40,
     token_budget_per_day: 24,
