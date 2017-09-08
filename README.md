@@ -27,14 +27,14 @@ const budgeteer = new Budgeteer({
 });
 const key = 'someName';
 
-// Budget configuration, typically per event type.
-const budget = {
-    initial_token_balance: 40,
-    token_budget_per_day: 24,
-    max_delay_days: 7 // Try processing an event at least once every <n> days
+// Token budget configuration, typically differs per event type.
+const token_budget = {
+    rate_per_day: 24, // Steady state token rate.
+    max_balance: 36   // Maximum balance available for bursts, when a job is
+                      // new or has not been executed in a long time.
 };
 
-return budgeteer.check(key, budget, req.startTime)
+return budgeteer.check(key, token_budget, req.startTime)
 .then(res => {
     if (res.isDuplicate) {
         // Duplicate. Drop the event.
@@ -44,23 +44,24 @@ return budgeteer.check(key, budget, req.startTime)
         // add event to a (Kafka) delay queue, based on the suggested delay.
         return enqueueToDelayQueue(event, delay)
         // Redis read / write.
-        .then(() => budgeteer.reportScheduled(key, budget, 0);
+        .then(() => budgeteer.reportScheduled(key, token_budget, 0);
     } else {
         const startTime = Date.now();
         // execute event
         return process_event(event)
         // Redis read / write.
-        .then(() => budgeteer.reportSuccess(key, budget, startTime, (Date.now() - startTime) / 1000))
+        .then(() => budgeteer.reportSuccess(key, token_budget, startTime, (Date.now() - startTime) / 1000))
         .catch(e => {
             // Time plus some failure penalty
             const cost = (Date.now() - startTime) / 1000 + 1;
-            return budgeteer.check(key, budget, req.startTime, cost)
+            return budgeteer.check(key, token_budget, req.startTime, cost)
             .then(res => {
                 if (!res.isDuplicate) {
+                    // We choose to enforce a minimum retry delay of 200 seconds.
                     delay = Math.max(delay, 200);
                     return enqueueToDelayQueue(event, delay)
                     // Redis read / write.
-                    .then(() => budgeteer.reportScheduled(key, budget, cost));
+                    .then(() => budgeteer.reportScheduled(key, token_budget, cost));
                 }
             });
         })

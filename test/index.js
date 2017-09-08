@@ -49,7 +49,7 @@ limiter._putInfo = function(key, info) {
 };
 
 const budget = {
-    initial_token_balance: 48,
+    max_token_balance: 48,
     token_budget_per_day: 24,
 };
 
