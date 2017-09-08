@@ -19,10 +19,10 @@ Features:
 ```javascript
 const budgeteer = new Budgeteer({ 
     store: {
-        type: 'redis',
+        type: 'redis', // Default & only supported storage type so far.
         host: 'redishost', 
         port: 12345,
-        ttl: 86400 * 7 // 7 days
+        ttl: 86400 * 7 // Store rate limiting / dedup information for 7 days
     }
 });
 const key = 'someName';
