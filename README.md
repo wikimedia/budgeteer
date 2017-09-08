@@ -42,13 +42,13 @@ return budgeteer.check(key, budget, req.startTime)
     }
     if (res.delay) {
         // add event to a (Kafka) delay queue, based on the suggested delay.
-        return enqueueToDelayQueue(evnt, delay)
+        return enqueueToDelayQueue(event, delay)
         // Redis read / write.
         .then(() => budgeteer.reportScheduled(key, budget, 0);
     } else {
         const startTime = Date.now();
         // execute event
-        return process_event(evnt)
+        return process_event(event)
         // Redis read / write.
         .then(() => budgeteer.reportSuccess(key, budget, startTime, (Date.now() - startTime) / 1000))
         .catch(e => {
@@ -58,7 +58,7 @@ return budgeteer.check(key, budget, req.startTime)
             .then(res => {
                 if (!res.isDuplicate) {
                     delay = Math.max(delay, 200);
-                    return enqueueToDelayQueue(evnt, delay)
+                    return enqueueToDelayQueue(event, delay)
                     // Redis read / write.
                     .then(() => budgeteer.reportScheduled(key, budget, cost));
                 }
