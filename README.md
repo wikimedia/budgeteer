@@ -29,7 +29,7 @@ const key = 'someName';
 
 // Token budget configuration, typically differs per event type.
 const token_budget = {
-    rate_per_day: 24, // Steady state token rate.
+    tokens_per_day: 24, // Steady state token rate.
     max_balance: 36   // Maximum balance available for bursts, when a job is
                       // new or has not been executed in a long time.
 };
