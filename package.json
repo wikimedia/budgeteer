@@ -1,0 +1,50 @@
+{
+  "name": "budgeteer",
+  "version": "0.1.0",
+  "description": "Cost-based request rate limiter, scheduler, and deduplicator. Uses a Redis backend by default.",
+  "main": "lib/budgeteer.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wikimedia/budgeteer.git"
+  },
+  "scripts": {
+    "test": "mocha --ui exports",
+    "coverage": "istanbul cover _mocha -- -R spec",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
+  },
+  "keywords": [
+    "REST",
+    "API",
+    "Kafka",
+    "queuing",
+    "EventBus"
+  ],
+  "author": "Wikimedia Services Team <services@lists.wikimedia.org>",
+  "contributors": [
+    "Gabriel Wicke <gwicke@wikimedia.org>",
+    "Petr Pchelko <ppchelko@wikimedia.org>"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://phabricator.wikimedia.org/tag/services/"
+  },
+  "homepage": "https://github.com/wikimedia/budgeteer",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "redis": "^2.7.1"
+  },
+  "devDependencies": {
+    "istanbul": "^0.4.5",
+    "mocha": "^3.4.2",
+    "mocha-lcov-reporter": "^1.3.0",
+    "coveralls": "^2.13.1",
+    "mocha-eslint":"^3.0.1",
+    "eslint-config-node-services": "^2.2.1",
+    "eslint-config-wikimedia": "^0.4.0",
+    "eslint-plugin-jsdoc": "^3.1.0",
+    "eslint-plugin-json": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=4"
+  }
+}
