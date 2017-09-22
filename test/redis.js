@@ -16,7 +16,7 @@ const basicTests = makeTestCases(limiter);
 module.exports = {
     before() {
         return limiter._putInfo('a', basicTests.state.a)
-        .then(() => limiter._putInfo('b', basicTests.b));
+        .then(() => limiter._putInfo('b', basicTests.state.b));
     },
     redis: basicTests.cases
 };
