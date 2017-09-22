@@ -53,7 +53,9 @@ module.exports = function(limiter) {
                 .then((res) => {
                     equal(res.isDuplicate, false);
                     equal(Math.round(res.delay / 5) * 5, 3600);
-                });
+                    return limiter.check('a', budget, Date.now() - 500);
+                })
+                .then(res => equal(res.isDuplicate, true));
             }
         }
     };

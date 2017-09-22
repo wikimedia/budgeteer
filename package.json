@@ -1,6 +1,6 @@
 {
   "name": "budgeteer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cost-based request rate limiter, scheduler, and deduplicator. Uses a Redis backend by default.",
   "main": "lib/budgeteer.js",
   "repository": {
